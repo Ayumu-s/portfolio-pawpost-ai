@@ -6,6 +6,7 @@ import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import RLock
 from uuid import uuid4
 
 from ..category_settings import Category
@@ -127,4 +128,64 @@ class TemplateStore:
         return cursor.rowcount > 0
 
 
-persistent_template_store = TemplateStore()
+class InMemoryTemplateStore:
+    """Disposable store for the public Vercel Mock deployment.
+
+    Vercel Functions do not provide a durable local filesystem. Keeping this
+    small store in memory lets the portfolio demo expose the template flow
+    without pretending that user edits are permanently saved.
+    """
+
+    def __init__(self) -> None:
+        self._templates: dict[str, SavedTemplate] = {}
+        self._lock = RLock()
+
+    def list(self, category: Category | None = None) -> list[SavedTemplate]:
+        with self._lock:
+            templates = [
+                template
+                for template in self._templates.values()
+                if category is None or template.category == category
+            ]
+            templates.sort(key=lambda template: template.name.casefold())
+            templates.sort(key=lambda template: template.updated_at, reverse=True)
+            if category is None:
+                templates.sort(key=lambda template: str(template.category))
+            return templates
+
+    def get(self, template_id: str) -> SavedTemplate | None:
+        with self._lock:
+            return self._templates.get(template_id)
+
+    def upsert(self, request: TemplateUpsertRequest) -> SavedTemplate:
+        name = request.name.strip()
+        body = request.template_body.strip()
+        template_id = request.template_id or f"saved_{uuid4().hex[:16]}"
+        now = _now()
+        with self._lock:
+            existing = self._templates.get(template_id)
+            if existing and existing.category != request.category:
+                raise ValueError("テンプレートのカテゴリは変更できません。")
+            saved = SavedTemplate(
+                template_id=template_id,
+                category=request.category,
+                name=name,
+                template_body=body,
+                created_at=existing.created_at if existing else now,
+                updated_at=now,
+            )
+            self._templates[template_id] = saved
+            return saved
+
+    def delete(self, template_id: str) -> bool:
+        with self._lock:
+            return self._templates.pop(template_id, None) is not None
+
+
+def _build_template_store() -> TemplateStore | InMemoryTemplateStore:
+    if os.getenv("PAWPOST_TEMPLATE_STORE_MODE", "").lower() == "memory":
+        return InMemoryTemplateStore()
+    return TemplateStore()
+
+
+persistent_template_store = _build_template_store()

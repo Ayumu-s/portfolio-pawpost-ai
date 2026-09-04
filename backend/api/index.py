@@ -8,6 +8,7 @@ import os
 # disposable path unconditionally here. Local development starts app.main
 # directly and therefore keeps using the repository's normal data directory.
 os.environ.setdefault("PAWPOST_TEMPLATE_DB_PATH", "/tmp/pawpost-ai.db")
+os.environ.setdefault("PAWPOST_TEMPLATE_STORE_MODE", "memory")
 
 from app.main import app
 
