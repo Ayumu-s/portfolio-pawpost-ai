@@ -3,11 +3,7 @@
   "framework": "fastapi",
   "functions": {
     "api/index.py": {
-      "excludeFiles": [
-        "tests/**",
-        "*.db",
-        "*.sqlite*"
-      ]
+      "excludeFiles": "{tests/**,*.db,*.sqlite*}"
     }
   }
 }
