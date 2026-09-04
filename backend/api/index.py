@@ -3,11 +3,11 @@
 import os
 
 
-# Template edits are disposable in the public Mock demo.  Keep the bundled
-# repository read-only and use Vercel's temporary writable directory instead.
-# Keep local imports on Windows unchanged so this entrypoint can be smoke-tested.
-if os.getenv("VERCEL") == "1":
-    os.environ.setdefault("PAWPOST_TEMPLATE_DB_PATH", "/tmp/pawpost-ai.db")
+# This file is the Vercel-only entrypoint. The Vercel Python runtime may not
+# expose the `VERCEL` system variable during module import, so configure the
+# disposable path unconditionally here. Local development starts app.main
+# directly and therefore keeps using the repository's normal data directory.
+os.environ.setdefault("PAWPOST_TEMPLATE_DB_PATH", "/tmp/pawpost-ai.db")
 
 from app.main import app
 
