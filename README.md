@@ -47,6 +47,16 @@ Mockモードの画像解析結果は、実画像を解析したものではな�
 
 `http://localhost:3000` を開き、画像または動画を入力して投稿案を生成します。初期プロバイダーは画像・文章ともに `mock` です。バックエンドのMockProviderはネットワークやAI SDKを呼び出しません。
 
+## Vercel公開デモ
+
+Vercelでは、`frontend/`をNext.jsプロジェクト、`backend/`をFastAPIプロジェクトとして分けて公開します。
+
+- Frontendの`NEXT_PUBLIC_API_BASE_URL`にFastAPI公開URLを設定
+- Backendの`FRONTEND_ORIGIN`にFrontend公開URLを設定
+- Backendの`PAWPOST_TEMPLATE_DB_PATH`は公開デモ用の一時領域を使用
+
+公開版はMockプロバイダーと架空データ専用です。テンプレート保存結果はデプロイ環境に永続保存されません。Productionの公開URLをこの章の先頭に追加します。
+
 ## テストと確認範囲
 
 バックエンドの `pytest` でMock設定のAPI経路、メディア処理、テンプレート保存を確認できます。フロントエンドの型チェック・ビルドとブラウザ上の主要導線は、依存パッケージをセットアップした環境で別途確認します。実AIの品質とInstagram実投稿は対象外です。
