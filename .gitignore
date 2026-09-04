@@ -1,0 +1,37 @@
+# Secrets and local configuration
+.env
+backend/.env
+frontend/.env.local
+
+# Python environments and caches
+backend/.venv/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node / Next.js generated files
+frontend/node_modules/
+node_modules/
+frontend/.next/
+.next/
+out/
+
+# Runtime data and test artifacts
+backend/data/*.db*
+*.sqlite*
+test-results/
+playwright-report/
+coverage/
+*.log
+debug.log
+
+# Archives, generated indexes, and private notes
+*.zip
+index.txt
+Obsidian/
+
+# Tool-generated internal agent instructions
+AGENTS.md
+CLAUDE.md
