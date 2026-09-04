@@ -49,13 +49,16 @@ Mockモードの画像解析結果は、実画像を解析したものではな�
 
 ## Vercel公開デモ
 
+- [PawPost AI フロントエンドデモ](https://portfolio-pawpost-ai.vercel.app/)
+- [PawPost AI バックエンドヘルスチェック](https://portfolio-pawpost-ai-backend.vercel.app/api/health)
+
 Vercelでは、`frontend/`をNext.jsプロジェクト、`backend/`をFastAPIプロジェクトとして分けて公開します。
 
 - Frontendの`NEXT_PUBLIC_API_BASE_URL`にFastAPI公開URLを設定
 - Backendの`FRONTEND_ORIGIN`にFrontend公開URLを設定
 - Backendの`PAWPOST_TEMPLATE_DB_PATH`は公開デモ用の一時領域を使用
 
-公開版はMockプロバイダーと架空データ専用です。テンプレート保存結果はデプロイ環境に永続保存されません。Productionの公開URLをこの章の先頭に追加します。
+公開版はMockプロバイダーと架空データ専用です。テンプレート保存結果はデプロイ環境に永続保存されません。
 
 ## テストと確認範囲
 
